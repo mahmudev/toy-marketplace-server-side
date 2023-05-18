@@ -62,6 +62,43 @@ async function run() {
       res.send(result);
     });
 
+    app.post("/products", async (req, res) => {
+      const newService = req.body;
+      const result = await productsCollection.insertOne(newService);
+      res.send(result);
+    });
+
+    app.put("/products/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updatedProduct = req.body;
+      const product = {
+        $set: {
+          title: updatedProduct.title,
+          toyName: updatedProduct.toyName,
+          img: updatedProduct.img,
+          sellerName: updatedProduct.sellerName,
+          sellerEmail: updatedProduct.sellerEmail,
+          category: updatedProduct.category,
+          price: updatedProduct.price,
+          Rating: updatedProduct.Rating,
+          quantity: updatedProduct.quantity,
+          description: updatedProduct.description,
+          brand: updatedProduct.brand,
+          color: updatedProduct.color,
+          weight: updatedProduct.weight,
+          material: updatedProduct.material,
+        },
+      };
+      const result = await productsCollection.updateOne(
+        filter,
+        product,
+        options
+      );
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
