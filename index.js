@@ -112,7 +112,6 @@ async function run() {
       const updatedProduct = req.body;
       const product = {
         $set: {
-          title: updatedProduct.title,
           toyName: updatedProduct.toyName,
           img: updatedProduct.img,
           sellerName: updatedProduct.sellerName,
@@ -133,6 +132,13 @@ async function run() {
         product,
         options
       );
+      res.send(result);
+    });
+
+    app.delete("/products/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await productsCollection.deleteOne(query);
       res.send(result);
     });
 
