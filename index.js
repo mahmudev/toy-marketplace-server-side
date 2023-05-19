@@ -19,6 +19,26 @@ const client = new MongoClient(uri, {
   },
 });
 
+const verifyJWT = (req, res, next) => {
+  const authorization = req.headers.authorization;
+  if (!authorization) {
+    return res
+      .status(401)
+      .send({ error: true, message: "unauthorized access" });
+  }
+  const token = authorization.split(" ")[1];
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+    if (err) {
+      return res
+        .status(401)
+        .send({ error: true, message: "unauthorized access" });
+    }
+    req.decoded = decoded;
+    next();
+  });
+};
+
+
 async function run() {
   try {
     const productsCollection = client.db("funkoFanfare").collection("products");
@@ -76,6 +96,18 @@ async function run() {
       const result = await productsCollection.insertOne(newService);
       res.send(result);
     });
+
+
+
+    app.get("/added-toys", verifyJWT, async (req, res) => {
+      let query = {};
+      if (req.query?.email) {
+        query = { sellerEmail: req.query.email };
+      }
+      const result = await productsCollection.find(query).toArray();
+      res.send(result);
+    });
+
 
     app.put("/products/:id", async (req, res) => {
       const id = req.params.id;
