@@ -3,6 +3,7 @@ require("dotenv").config();
 const cors = require("cors");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const app = express();
+const jwt = require("jsonwebtoken");
 const port = process.env.PORT || 5000;
 
 app.use(cors());
@@ -21,6 +22,15 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     const productsCollection = client.db("funkoFanfare").collection("products");
+
+    app.post("/jwt", (req, res) => {
+      const user = req.body;
+      const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+        expiresIn: "30d",
+      });
+      res.send({ token });
+    });
+
     app.get("/products", async (req, res) => {
       let { page, limit, sort, asc } = req.query;
       if (!page) page = 1;
