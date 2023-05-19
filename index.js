@@ -90,11 +90,6 @@ async function run() {
       res.send(result);
     });
 
-    app.post("/products", async (req, res) => {
-      const newService = req.body;
-      const result = await productsCollection.insertOne(newService);
-      res.send(result);
-    });
 
     app.get("/added-toys", verifyJWT, async (req, res) => {
       let query = {};
@@ -104,8 +99,13 @@ async function run() {
       const result = await productsCollection.find(query).toArray();
       res.send(result);
     });
+    app.post("/added-toys", async (req, res) => {
+      const newProduct = req.body;
+      const result = await productsCollection.insertOne(newProduct);
+      res.send(result);
+    }); 
 
-    app.put("/products/:id", async (req, res) => {
+    app.put("/added-toys/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
       const options = { upsert: true };
@@ -135,7 +135,7 @@ async function run() {
       res.send(result);
     });
 
-    app.delete("/products/:id", async (req, res) => {
+    app.delete("/added-toys/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await productsCollection.deleteOne(query);
