@@ -99,6 +99,7 @@ async function run() {
       const result = await productsCollection.find(query).toArray();
       res.send(result);
     });
+    
     app.post("/added-toys", async (req, res) => {
       const newProduct = req.body;
       const result = await productsCollection.insertOne(newProduct);
@@ -117,7 +118,7 @@ async function run() {
           sellerName: updatedProduct.sellerName,
           sellerEmail: updatedProduct.sellerEmail,
           category: updatedProduct.category,
-          price: updatedProduct.price,
+          Price: updatedProduct.Price,
           Rating: updatedProduct.Rating,
           quantity: updatedProduct.quantity,
           description: updatedProduct.description,
