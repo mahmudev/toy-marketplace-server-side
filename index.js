@@ -38,7 +38,6 @@ const verifyJWT = (req, res, next) => {
   });
 };
 
-
 async function run() {
   try {
     const productsCollection = client.db("funkoFanfare").collection("products");
@@ -97,8 +96,6 @@ async function run() {
       res.send(result);
     });
 
-
-
     app.get("/added-toys", verifyJWT, async (req, res) => {
       let query = {};
       if (req.query?.email) {
@@ -107,7 +104,6 @@ async function run() {
       const result = await productsCollection.find(query).toArray();
       res.send(result);
     });
-
 
     app.put("/products/:id", async (req, res) => {
       const id = req.params.id;
@@ -137,13 +133,6 @@ async function run() {
         product,
         options
       );
-      res.send(result);
-    });
-
-    app.delete("/products/:id", async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: new ObjectId(id) };
-      const result = await productsCollection.deleteOne(query);
       res.send(result);
     });
 
